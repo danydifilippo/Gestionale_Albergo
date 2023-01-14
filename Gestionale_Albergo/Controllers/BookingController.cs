@@ -26,6 +26,7 @@ namespace Gestionale_Albergo.Controllers
                     Prenotazioni p = new Prenotazioni
                     {
                         IdPrenotazione = Convert.ToInt32(reader["IdPrenotazione"]),
+                        IdCliente = Convert.ToInt32(reader["IdCliente"]),
                         Cliente = reader["Cognome"].ToString() + " " + reader["Nome"].ToString(),
                         NrCamera = Convert.ToInt32(reader["NrCamera"]),
                         DataPren = Convert.ToDateTime(reader["DataPrenotazione"]),
@@ -132,6 +133,37 @@ namespace Gestionale_Albergo.Controllers
                 ViewBag.msgerror = ex.Message;
             }
             finally { sql.Close(); }
+
+            SqlConnection conn = Connessione.GetConnection();
+            conn.Open();
+
+            int nuovoId = 0;
+
+            SqlCommand command = Connessione.GetCommand("SELECT top(1) * FROM PRENOTAZIONE where IdCliente=@IdCliente ORDER BY IdPrenotazione Desc", conn);
+
+            command.Parameters.AddWithValue("IdCliente", p.IdCliente);
+
+            SqlDataReader read = command.ExecuteReader();
+
+            while (read.Read())
+            {
+                nuovoId = Convert.ToInt32(read["IdPrenotazione"]);
+            }
+
+            conn.Close();
+
+            SqlConnection con = Connessione.GetConnection();
+            con.Open();
+
+
+            SqlCommand comm = Connessione.GetCommand("UPDATE CLIENTI set IdPrenotazione=@Id where IdCliente=@IdCliente", con);
+
+            comm.Parameters.AddWithValue("IdCliente", p.IdCliente);
+            comm.Parameters.AddWithValue("Id", nuovoId);
+
+            comm.ExecuteNonQuery();
+
+            con.Close();
             return RedirectToAction("ListaPren");
         }
 
@@ -166,6 +198,7 @@ namespace Gestionale_Albergo.Controllers
                   
                     ViewBag.TipoPensioni = Pensione.ListaPensione;
                     ViewBag.ListaClienti = Clienti.ListaClienti;
+                    ViewBag.ListaCamere = Camere.ListaCamere;
                 }
             }
             catch (Exception ex)
@@ -254,18 +287,81 @@ namespace Gestionale_Albergo.Controllers
 
         // POST: Booking/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, Prenotazioni p)
+        public ActionResult Delete(int id, int idCliente)
         {
+
             SqlConnection sql = Connessione.GetConnection();
             sql.Open();
 
-            try
-            {
-                SqlCommand com = Connessione.GetCommand("DELETE FROM PRENOTAZIONE WHERE IdPrenotazione=@Id", sql);
+                SqlCommand com = Connessione.GetCommand("DELETE FROM Servizio WHERE IdPrenotazione=@Id", sql);
 
                 com.Parameters.AddWithValue("Id", id);
 
                 com.ExecuteNonQuery();
+
+            sql.Close();
+
+
+            SqlConnection sq = Connessione.GetConnection();
+            sq.Open();
+
+            int nuovoId = 0;
+
+            SqlCommand co = Connessione.GetCommand("SELECT top(2) * FROM PRENOTAZIONE where IdCliente=@IdCliente ORDER BY IdPrenotazione Desc", sq);
+
+            co.Parameters.AddWithValue("IdCliente", idCliente);
+
+            SqlDataReader read = co.ExecuteReader();
+
+            if (read.HasRows)
+                if (read[1].Equals(id))
+
+                {
+                    while (read.Read())
+                    {
+                        if (Convert.ToInt32(read["IdPrenotazione"]) != id)
+                        {
+                            nuovoId = Convert.ToInt32(read["IdPrenotazione"]);
+                        }
+
+                    }
+                }else
+                {
+                    nuovoId = Convert.ToInt32(read["IdPrenotazione"]);
+                }
+            }
+
+
+            sq.Close();
+
+
+            SqlConnection conn = Connessione.GetConnection();
+            conn.Open();
+
+        
+                SqlCommand command = Connessione.GetCommand("UPDATE CLIENTI set IdPrenotazione=@nuovoID where IdPrenotazione=@Id", conn);
+
+            command.Parameters.AddWithValue("Id", id);
+
+            if(nuovoId != 0)
+            {
+                command.Parameters.AddWithValue("nuovoID", nuovoId);
+            }
+            command.ExecuteNonQuery();
+
+            conn.Close();
+
+
+        SqlConnection con = Connessione.GetConnection();
+            con.Open();
+
+            try
+            {
+                SqlCommand comm = Connessione.GetCommand("DELETE FROM PRENOTAZIONE WHERE IdPrenotazione=@Id", con);
+
+                comm.Parameters.AddWithValue("Id", id);
+
+                comm.ExecuteNonQuery();
 
 
             }
@@ -273,7 +369,7 @@ namespace Gestionale_Albergo.Controllers
             {
                 ViewBag.msgerror = ex.Message;
             }
-            finally { sql.Close(); }
+            finally { con.Close(); }
             return RedirectToAction("ListaPren");
         }
     }

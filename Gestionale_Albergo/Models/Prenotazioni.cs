@@ -29,12 +29,13 @@ namespace Gestionale_Albergo.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CheckOut { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:C2}")]
+        [NoChar(ErrorMessage ="Formato solo numerico")]
+        [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal Acconto { get; set; }
 
         [Display(Name = "Tariffa Soggiorno")]
-
-        [DisplayFormat(DataFormatString = "{0:C2}")]
+        [NoChar(ErrorMessage = "Formato solo numerico")]
+        [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal Prezzo { get; set; }
 
         public string Pensione { get; set; }

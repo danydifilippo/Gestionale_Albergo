@@ -8,6 +8,7 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
 </head>
 <body>
     <div class="row">
@@ -18,7 +19,7 @@
             <div>
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Prenotazioni", "ListaPren", "Booking")</li>
-                    <li>@Html.ActionLink("Clienti", "ListaClienti", "Customer")</li>
+                    <li>@Html.ActionLink("Clienti", "CustomList", "Customer")</li>
                     <li>@Html.ActionLink("Login", "Signin", "Home")</li>
                 </ul>
             </div>
@@ -34,7 +35,7 @@
         </footer>
 
 
-    @Scripts.Render("~/bundles/bootstrap")
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -16,17 +16,28 @@ namespace Gestionale_Albergo.Models
         public string Cognome { get; set; }
 
         [Display(Name = "Codice Fiscale")]
+        [StringLength(16, MinimumLength = 16, ErrorMessage ="Codice Fiscale incompleto")]
+        [Remote("CFEsistente", "Customer", ErrorMessage = "Cliente già inserito")]
         public string CF { get; set;}
 
         [Display(Name = "Città")]
         public string Citta { get; set; }
+
+        [StringLength(3, MinimumLength = 2, ErrorMessage = "Inserire Sigla Provincia")]
         public string Prov { get; set; }
 
+        public string Contatto { get; set; }
+
+        [EmailAddress(ErrorMessage ="Inserire indirizzo e-mail valido")]
         [Display(Name = "E-mail")]
         public string email { get; set; }
 
-        [Display(Name = "Nr Pren.")]
+        [Display(Name = "Nr Ultima Pren.")]
         public int IdPrenotazione { get; set; }
+
+        [Display(Name = "Arrivo")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime CheckIn { get; set; }
 
         public static List<SelectListItem> ListaClienti
         {

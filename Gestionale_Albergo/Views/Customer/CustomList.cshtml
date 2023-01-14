@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Gestionale_Albergo.Models.Clienti>
+
+@{
+    ViewBag.Title = "CustomList";
+}
+
+<h2>Clienti</h2>
+
+@if (ViewBag.msgerror != null)
+{
+    <div class="alert alert-warning">@ViewBag.msgerror</div>
+}
+
+<p>
+    @Html.ActionLink("Inserisci nuovo cliente", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IdCliente)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CF)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Citta)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Prov)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contatto)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CheckIn)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CF)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Citta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prov)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contatto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CheckIn)
+            </td>
+            <td>
+                @Html.ActionLink("Modifica", "Edit", new { id = item.IdCliente }) |
+                @Html.ActionLink("Dettagli", "Details", new { id = item.IdCliente }) |
+                @Html.ActionLink("Elimina", "Delete", new { id = item.IdCliente })
+            </td>
+        </tr>
+    }
+
+</table>

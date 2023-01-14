@@ -64,10 +64,10 @@
             @Html.DisplayFor(modelItem => item.CheckOut)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Prezzo)
+            @Html.DisplayFor(modelItem => item.Prezzo) €
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Acconto)
+            @Html.DisplayFor(modelItem => item.Acconto) €
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Tot)
@@ -78,7 +78,7 @@
         <td>
             @Html.ActionLink("Modifica", "Edit", new { id = item.IdPrenotazione }) |
             @Html.ActionLink("Dettagli", "Details", new { id = item.IdPrenotazione }) |
-            @Html.ActionLink("Cancella", "Delete", new { id = item.IdPrenotazione })
+            @Html.ActionLink("Cancella", "Delete", new { id = item.IdPrenotazione , idCliente = item.IdCliente })
         </td>
     </tr>
 }
