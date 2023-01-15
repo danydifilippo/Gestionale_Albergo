@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Gestionale_Albergo.Controllers
 {
+    [Authorize]
     public class BookingController : Controller
     {
         // GET: Booking

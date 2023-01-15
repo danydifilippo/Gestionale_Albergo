@@ -108,10 +108,10 @@
                 url: '/Customer/GetBookingsById',
                 success: function (p) {
                     $.each(p, function (index, valore) {
+                        
                         $("#ShowBook").append("<div class=\"card\" style=\"width: 23rem;\">" +
-                            " <div class=\"card-header\"> Prenotazione nr" + valore.IdPrenotazione + " del " + valore.DataPren +
+                            " <div class=\"card-header\"> Prenotazione nr" + valore.IdPrenotazione + 
                             " </div > <ul class=\"list-group list-group-flush\">" +
-                            " <li class=\"list-group-item\">Dal " + valore.Checkin + " al " + valore.Checkout + "</li>" +
                             " <li class=\"list-group-item\">Camera nr " + valore.NrCamera + "</li>" +
                             " <li class=\"list-group-item\">Tipologia: " + valore.Pensione + "</li>" +
                             " <li class=\"list-group-item\">Tariffa soggiorno: " + valore.Prezzo + " €</li>" +

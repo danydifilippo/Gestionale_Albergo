@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Gestionale_Albergo.Controllers
 {
+    [Authorize]
     public class QueriesController : Controller
     {
         // GET: Queries
@@ -26,7 +27,7 @@ namespace Gestionale_Albergo.Controllers
             try
             {
                 SqlCommand com = Connessione.GetCommand("SELECT * FROM PRENOTAZIONE AS P INNER JOIN CLIENTI AS C " +
-                    "ON C.IDCLIENTE = P.IDCLIENTE WHERE Cod_Fiscale = @CF", sql);
+                    "ON C.IDCLIENTE = P.IDCLIENTE inner join Pensione AS T ON T.IdPensione=P.IdPensione WHERE Cod_Fiscale = @CF", sql);
                 com.Parameters.AddWithValue("CF", CF);
 
                 SqlDataReader reader = com.ExecuteReader();
@@ -59,6 +60,40 @@ namespace Gestionale_Albergo.Controllers
             return Json(PrenotazioniCliente, JsonRequestBehavior.AllowGet);
         }
 
-        
+        // JSONRESULT GET BOOKINGS BY Type
+        public JsonResult GetBookingsByType(string Type)
+        {
+            SqlConnection sql = Connessione.GetConnection();
+            sql.Open();
+            List<Prenotazioni> PrenotazioniCliente = new List<Prenotazioni>();
+
+            try
+            {
+                SqlCommand com = Connessione.GetCommand("SELECT COUNT(*) as TotPren, TipoPensione FROM PENSIONE" +
+                    " inner join Prenotazione ON Pensione.IdPensione=Prenotazione.IdPensione group by TipoPensione having TipoPensione = @Type", sql);
+                com.Parameters.AddWithValue("Type", Type);
+
+                SqlDataReader reader = com.ExecuteReader();
+
+
+
+                while (reader.Read())
+                {
+                    Prenotazioni b = new Prenotazioni();
+                    b.TotPren = Convert.ToInt32(reader["TotPren"]);
+                    b.Pensione = reader["TipoPensione"].ToString();
+                    
+                    PrenotazioniCliente.Add(b);
+                }
+            }
+            catch
+            {
+
+            }
+            finally { sql.Close(); }
+
+            return Json(PrenotazioniCliente, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

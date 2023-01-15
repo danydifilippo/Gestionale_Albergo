@@ -23,7 +23,20 @@
                     <li>@Html.ActionLink("Camere", "RoomList", "Room")</li>
                     <li>@Html.ActionLink("Servizi", "ServiceList", "Service")</li>
                     <li>@Html.ActionLink("Check-Out", "ListaCk", "Checkout")</li>
-                    <li>@Html.ActionLink("Login", "Signin", "Home")</li>
+                    <li>@Html.ActionLink("Ricerca prenotazioni", "QueriesPage", "Queries")</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item mx-2">
+                            <a class="nav-link">@Html.ActionLink("Logout", "Logout", "Home")</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item mx-2">
+                            <a class="nav-link">@Html.ActionLink("Login", "Login", "Home")</a>
+                        </li>
+
+                    }
                 </ul>
             </div>
         </div>

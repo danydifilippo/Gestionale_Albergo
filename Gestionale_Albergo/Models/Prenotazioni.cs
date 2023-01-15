@@ -53,6 +53,8 @@ namespace Gestionale_Albergo.Models
         [Display(Name = "Da Saldare")]
         public decimal Saldo { get; set; }
 
+        public int TotPren { get; set; }
+
         public static decimal TotServizi(int id)
         {
             SqlConnection sql = Connessione.GetConnection();

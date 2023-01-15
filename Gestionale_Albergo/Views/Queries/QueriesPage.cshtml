@@ -10,22 +10,22 @@
         <h3>Ricerca prenotazioni per codice fiscale cliente</h3>
         <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" id="SearchCF" placeholder="Codice Fiscale" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit" id="GetBooksCF">Ricerca</button>
+            <button class="btn btn-outline-info" type="button"  id="GetBooksCF">Ricerca</button>
         </form>
     </div>
     <div class="col-4 border border-info">
         <h3>Ricerca prenotazioni per tipo pensione</h3>
         <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Codice Fiscale" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Ricerca</button>
+            <input class="form-control me-2" type="search" id="SearchType" placeholder="Tipologia Pensione" aria-label="Search">
+            <button class="btn btn-outline-info" type="button" id="GetBooksType">Ricerca</button>
         </form>
     </div>
 </div>
 
+<div id="showInfo"></div>
 
-<div id="showInfo">
+  
 
-</div>
 
 
 <script type="text/javascript">
@@ -41,39 +41,47 @@
                 url: '/Queries/GetBookingsByCF',
                 success: function (r) {
                     $.each(r, function (index, valore) {
-
+                        
                         $("#showInfo").append("<table class=\"table table - info\">" +
                             "<thead><tr><th scope=\"col\">Pren. Nr</th>" +
-                            "<th scope=\"col\">First</th><th scope=\"col\">Last</th><th scope=\"col\">Handle</th>"
-                            @*""
-      
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
-                            </div > "*@
+                            "<th scope=\"col\">Cliente</th>" +
+                            "<th scope=\"col\">Camera</th>" +
+                            "<th scope=\"col\">Tipologia</th>" +
+                            "<th scope=\"col\">Tariffa</th>" +
+                            "</tr></thead><tbody>" +
+                            "<tr><th scope=\"row\">" + valore.IdPrenotazione + "</th>" +
+                            "<td>" + valore.Cliente + "</td>" + 
+                            "<td>" + valore.NrCamera + "</td>" +
+                            "<td>" + valore.Pensione + "</td>" +
+                            "<td>" + valore.Prezzo + " €</td></tr>" +
+                            "</tbody></table>"
                         );
                     })
                 }
                 })
+
+        }
+
+        )
+        $("#GetBooksType").click(function () {
+            var Type = $('#SearchType').val();
+            $('#showInfo').empty();
+            $.ajax({
+                method: 'GET',
+                data: { 'Type': Type },
+                url: '/Queries/GetBookingsByType',
+                success: function (r) {
+                    $.each(r, function (index, valore) {
+
+                        $("#showInfo").append("<ul class=\"list-group\">" +
+                            "<li class=\"list-group-item active\" aria-current=\"true\"> Totale prenotazioni</li>" +
+                            "<li class=\"list-group-item\">Tipologia: " + valore.Pensione + "</li>" +
+                            "<li class=\"list-group-item\">" + valore.TotPren + "</li>" +
+                            "</ul>"
+                        );
+                    })
+                }
+            })
 
         }
 

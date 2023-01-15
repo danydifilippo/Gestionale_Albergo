@@ -11,6 +11,7 @@ using System.Web.WebPages;
 
 namespace Gestionale_Albergo.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         // GET: Customer

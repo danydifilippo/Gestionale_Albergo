@@ -9,6 +9,7 @@ using System.Web.Security;
 
 namespace Gestionale_Albergo.Controllers
 {
+    [Authorize]
     public class RoomController : Controller
     {
         // GET: Room

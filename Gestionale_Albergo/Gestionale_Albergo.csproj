@@ -233,6 +233,7 @@
     <Content Include="Views\Checkout\ListaCk.cshtml" />
     <Content Include="Views\Checkout\Details.cshtml" />
     <Content Include="Views\Queries\QueriesPage.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
