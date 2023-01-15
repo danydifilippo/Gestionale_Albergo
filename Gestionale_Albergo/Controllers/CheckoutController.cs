@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Gestionale_Albergo.Models;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -9,81 +11,87 @@ namespace Gestionale_Albergo.Controllers
     public class CheckoutController : Controller
     {
         // GET: Checkout
-        public ActionResult Index()
+        public ActionResult ListaCk()
         {
-            return View();
+            SqlConnection sql = Connessione.GetConnection();
+            sql.Open();
+            List<Prenotazioni> Bookings = new List<Prenotazioni>();
+
+            try
+            {
+                SqlCommand com = Connessione.GetStoreProcedure("GetBookings", sql);
+                SqlDataReader reader = com.ExecuteReader();
+                while (reader.Read())
+                {
+                    Prenotazioni p = new Prenotazioni
+                    {
+                        IdPrenotazione = Convert.ToInt32(reader["IdPrenotazione"]),
+                        IdCliente = Convert.ToInt32(reader["IdCliente"]),
+                        Cliente = reader["Cognome"].ToString() + " " + reader["Nome"].ToString(),
+                        NrCamera = Convert.ToInt32(reader["NrCamera"]),
+                        DataPren = Convert.ToDateTime(reader["DataPrenotazione"]),
+                        CheckIn = Convert.ToDateTime(reader["DataArrivo"]),
+                        CheckOut = Convert.ToDateTime(reader["DataUscita"]),
+                        Acconto = Convert.ToDecimal(reader["Acconto"]),
+                        Prezzo = Convert.ToDecimal(reader["PrezzoSoggiorno"]),
+                        Pensione = reader["TipoPensione"].ToString(),
+                        Tot = Prenotazioni.TotServizi(Convert.ToInt32(reader["IdPrenotazione"])),
+                        Saldo = Prenotazioni.DaSaldare(Convert.ToDecimal(reader["PrezzoSoggiorno"]), Convert.ToDecimal(reader["Acconto"]), Prenotazioni.TotServizi(Convert.ToInt32(reader["IdPrenotazione"])))
+                    };
+                    Bookings.Add(p);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.msgerror = ex.Message;
+            }
+            finally { sql.Close(); }
+
+            return View(Bookings);
         }
 
         // GET: Checkout/Details/5
         public ActionResult Details(int id)
         {
-            return View();
-        }
+            SqlConnection sql = Connessione.GetConnection();
+            sql.Open();
+            Prenotazioni b = new Prenotazioni();
 
-        // GET: Checkout/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Checkout/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
             try
             {
-                // TODO: Add insert logic here
+                SqlCommand com = Connessione.GetStoreProcedure("GetBookingById", sql);
+                com.Parameters.AddWithValue("IdPrenotazione", id);
 
-                return RedirectToAction("Index");
+                SqlDataReader reader = com.ExecuteReader();
+
+
+
+                while (reader.Read())
+                {
+
+                    b.IdPrenotazione = Convert.ToInt32(reader["IdPrenotazione"]);
+                    b.Cliente = reader["Cognome"].ToString() + " " + reader["Nome"].ToString();
+                    b.NrCamera = Convert.ToInt32(reader["NrCamera"]);
+                    b.DataPren = Convert.ToDateTime(reader["DataPrenotazione"]);
+                    b.CheckIn = Convert.ToDateTime(reader["DataArrivo"]);
+                    b.CheckOut = Convert.ToDateTime(reader["DataUscita"]);
+                    b.Acconto = Convert.ToDecimal(reader["Acconto"]);
+                    b.Prezzo = Convert.ToDecimal(reader["PrezzoSoggiorno"]);
+                    b.Pensione = reader["TipoPensione"].ToString();
+                    b.Tot = Prenotazioni.TotServizi(Convert.ToInt32(reader["IdPrenotazione"]));
+                    b.Saldo = Prenotazioni.DaSaldare(Convert.ToDecimal(reader["PrezzoSoggiorno"]), Convert.ToDecimal(reader["Acconto"]), Prenotazioni.TotServizi(Convert.ToInt32(reader["IdPrenotazione"])));
+
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewBag.msgerror = ex.Message;
             }
-        }
+            finally { sql.Close(); }
 
-        // GET: Checkout/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Checkout/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Checkout/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Checkout/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            return View(b);
         }
     }
 }
+        

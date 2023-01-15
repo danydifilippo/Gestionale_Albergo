@@ -229,10 +229,11 @@
     <Content Include="Views\Service\Create.cshtml" />
     <Content Include="Views\Service\Edit.cshtml" />
     <Content Include="Views\Service\Delete.cshtml" />
+    <Content Include="Views\Checkout\ListaCk.cshtml" />
+    <Content Include="Views\Checkout\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Checkout\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
