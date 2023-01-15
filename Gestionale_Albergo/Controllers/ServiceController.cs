@@ -195,23 +195,58 @@ namespace Gestionale_Albergo.Controllers
         // GET: Service/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            SqlConnection sql = Connessione.GetConnection();
+            sql.Open();
+            Servizi c = new Servizi();
+
+            try
+            {
+                SqlCommand com = Connessione.GetCommand("Select * FROM SERVIZIO AS S INNER JOIN PRENOTAZIONE AS P " +
+                    "ON P.IdPrenotazione = S.IdPrenotazione where IdServizio=@id", sql);
+                com.Parameters.AddWithValue("id", id);
+
+                SqlDataReader reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+
+                    c.IdServizio = Convert.ToInt32(reader["IdServizio"]);
+                    c.Servizio = reader["TipoServizio"].ToString();
+                    c.IdPrenotazione = Convert.ToInt32(reader["IdPrenotazione"]);
+                    c.Prezzo = Convert.ToDecimal(reader["PrezzoTot"]);
+                    c.Quantita = Convert.ToInt32(reader["Quantita"]);
+                    c.Data = Convert.ToDateTime(reader["DataAggiunta"]);
+                    c.Cliente = reader["Cognome"].ToString() + " " + reader["Nome"].ToString();
+                    c.NrCamera = Convert.ToInt32(reader["NrCamera"]);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.msgerror = ex.Message;
+            }
+            finally { sql.Close(); }
+
+            return View(c);
         }
 
         // POST: Service/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, Servizi s)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            SqlConnection sql = Connessione.GetConnection();
+            sql.Open();
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            SqlCommand com = Connessione.GetCommand("DELETE FROM servizio WHERE IdServizio=@id", sql);
+
+            com.Parameters.AddWithValue("id", id);
+
+            com.ExecuteNonQuery();
+
+            sql.Close();
+
+
+            return RedirectToAction("ServiceList");
         }
     }
 }
