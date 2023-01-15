@@ -32,12 +32,12 @@ namespace Gestionale_Albergo.Models
         [Display(Name = "E-mail")]
         public string email { get; set; }
 
-        [Display(Name = "Nr Ultima Pren.")]
+        [Display(Name = "Pren. nr")]
         public int IdPrenotazione { get; set; }
 
         [Display(Name = "Arrivo")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime CheckIn { get; set; }
+        public DateTime? CheckIn { get; set; }
 
         public static List<SelectListItem> ListaClienti
         {

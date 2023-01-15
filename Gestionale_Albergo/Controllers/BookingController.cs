@@ -161,7 +161,7 @@ namespace Gestionale_Albergo.Controllers
             comm.Parameters.AddWithValue("IdCliente", p.IdCliente);
             comm.Parameters.AddWithValue("Id", nuovoId);
 
-            comm.ExecuteNonQuery();
+           int row = comm.ExecuteNonQuery();
 
             con.Close();
             return RedirectToAction("ListaPren");
@@ -290,6 +290,8 @@ namespace Gestionale_Albergo.Controllers
         public ActionResult Delete(int id, int idCliente)
         {
 
+        //ELIMINA SERVIZI COLLEGATI
+
             SqlConnection sql = Connessione.GetConnection();
             sql.Open();
 
@@ -301,58 +303,21 @@ namespace Gestionale_Albergo.Controllers
 
             sql.Close();
 
-
-            SqlConnection sq = Connessione.GetConnection();
-            sq.Open();
-
-            int nuovoId = 0;
-
-            SqlCommand co = Connessione.GetCommand("SELECT top(2) * FROM PRENOTAZIONE where IdCliente=@IdCliente ORDER BY IdPrenotazione Desc", sq);
-
-            co.Parameters.AddWithValue("IdCliente", idCliente);
-
-            SqlDataReader read = co.ExecuteReader();
-
-            if (read.HasRows)
-                if (read[1].Equals(id))
-
-                {
-                    while (read.Read())
-                    {
-                        if (Convert.ToInt32(read["IdPrenotazione"]) != id)
-                        {
-                            nuovoId = Convert.ToInt32(read["IdPrenotazione"]);
-                        }
-
-                    }
-                }else
-                {
-                    nuovoId = Convert.ToInt32(read["IdPrenotazione"]);
-                }
-            }
-
-
-            sq.Close();
-
-
+         //ELIMINA PRENOTAZIONE DALLA TAB CLIENTI COLLEGATA
             SqlConnection conn = Connessione.GetConnection();
             conn.Open();
 
         
-                SqlCommand command = Connessione.GetCommand("UPDATE CLIENTI set IdPrenotazione=@nuovoID where IdPrenotazione=@Id", conn);
+                SqlCommand command = Connessione.GetCommand("UPDATE CLIENTI set IdPrenotazione=null where IdPrenotazione=@Id", conn);
 
             command.Parameters.AddWithValue("Id", id);
 
-            if(nuovoId != 0)
-            {
-                command.Parameters.AddWithValue("nuovoID", nuovoId);
-            }
             command.ExecuteNonQuery();
 
             conn.Close();
 
-
-        SqlConnection con = Connessione.GetConnection();
+         //ELIMINA PRENOTAZIONE
+            SqlConnection con = Connessione.GetConnection();
             con.Open();
 
             try
@@ -370,6 +335,53 @@ namespace Gestionale_Albergo.Controllers
                 ViewBag.msgerror = ex.Message;
             }
             finally { con.Close(); }
+
+        //RICERCA ULTIMA PRENOTAZIONE DI QUEL CLIENTE
+            SqlConnection sq = Connessione.GetConnection();
+            sq.Open();
+
+            int nuovoId = 0;
+
+            SqlCommand co = Connessione.GetCommand("SELECT top(1) * FROM PRENOTAZIONE where IdCliente=@IdCliente ORDER BY IdPrenotazione Desc", sq);
+
+            co.Parameters.AddWithValue("IdCliente", idCliente);
+
+            SqlDataReader read = co.ExecuteReader();
+
+            if (read.HasRows)
+
+            {
+                while (read.Read())
+                {
+                    if (Convert.ToInt32(read["IdPrenotazione"]) != id)
+                    {
+                        nuovoId = Convert.ToInt32(read["IdPrenotazione"]);
+                    }
+
+                }
+            }
+
+            sq.Close();
+
+         //AGGIORNA PRENOTAZIONE ALL'ULTIMA ESISTENTE NELLA TAB CLIENTE
+            if (nuovoId > 0)
+            {
+
+                SqlConnection connec = Connessione.GetConnection();
+                connec.Open();
+
+
+                SqlCommand comma = Connessione.GetCommand("UPDATE CLIENTI set IdPrenotazione=@nuovoId where IdCliente=@IdCliente", connec);
+
+                comma.Parameters.AddWithValue("IdCliente", idCliente);
+                comma.Parameters.AddWithValue("nuovoID", nuovoId);
+
+                comma.ExecuteNonQuery();
+
+                connec.Close();
+  
+            }
+
             return RedirectToAction("ListaPren");
         }
     }
