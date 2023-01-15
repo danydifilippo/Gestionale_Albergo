@@ -106,6 +106,7 @@ namespace Gestionale_Albergo.Controllers
                 return View(c);
            }
 
+        // JSONRESULT GET BOOKINGS BY ID
         public JsonResult GetBookingsById(int id)
         {
             SqlConnection sql = Connessione.GetConnection();

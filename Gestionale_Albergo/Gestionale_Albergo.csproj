@@ -124,6 +124,7 @@
     <Compile Include="Controllers\CheckoutController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\QueriesController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="Global.asax.cs">
@@ -231,6 +232,7 @@
     <Content Include="Views\Service\Delete.cshtml" />
     <Content Include="Views\Checkout\ListaCk.cshtml" />
     <Content Include="Views\Checkout\Details.cshtml" />
+    <Content Include="Views\Queries\QueriesPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

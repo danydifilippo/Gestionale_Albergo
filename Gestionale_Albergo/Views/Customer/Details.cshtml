@@ -109,11 +109,16 @@
                 success: function (p) {
                     $.each(p, function (index, valore) {
                         $("#ShowBook").append("<div class=\"card\" style=\"width: 23rem;\">" +
-                            " <div class=\"card-header\"> Prenotazione nr" + valore.IdPrenotazione +
+                            " <div class=\"card-header\"> Prenotazione nr" + valore.IdPrenotazione + " del " + valore.DataPren +
                             " </div > <ul class=\"list-group list-group-flush\">" +
-                            " <li class=\"list-group-item\">An item</li>" +
-                            " <li class=\"list-group-item\">A second item</li>" +
-                            " <li class=\"list-group-item\">A second item</li></ul>");
+                            " <li class=\"list-group-item\">Dal " + valore.Checkin + " al " + valore.Checkout + "</li>" +
+                            " <li class=\"list-group-item\">Camera nr " + valore.NrCamera + "</li>" +
+                            " <li class=\"list-group-item\">Tipologia: " + valore.Pensione + "</li>" +
+                            " <li class=\"list-group-item\">Tariffa soggiorno: " + valore.Prezzo + " €</li>" +
+                            " <li class=\"list-group-item\">Acconto: " + valore.Acconto + " €</li >" +
+                            " <li class=\"list-group-item\">Tot. servizi richiesti: " + valore.Tot + " </li >" +
+                            " <li class=\"list-group-item\">Ancora da saldare: " + valore.Saldo + " </li ></ul > "
+                        );
                     })
                 }
                 })
